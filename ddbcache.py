@@ -13,7 +13,9 @@ class DDBCache:
     dynamodb = boto3.resource('dynamodb')
 
     def __init__(self, TableName, RangeKey=None):
-        "initialize the table using the table's name"
+        '''initializes the table using the table's name, 
+        if the table has a range key, the range key
+        must be provided'''
         self.table = self.dynamodb.Table(TableName)
         key_schema = self.table.key_schema
         self.PrimaryKey = key_schema[0]['AttributeName']
@@ -26,7 +28,7 @@ class DDBCache:
 
 
     def __getitem__(self, key):
-        'allow bracket access on primary key, returns a dictionary'
+        '''allow bracket access on primary key, returns a dictionary'''
         try:
             Key = {self.PrimaryKey: key}
 
@@ -38,7 +40,7 @@ class DDBCache:
             return None
 
     def __setitem__(self, key, value):
-        'allow bracket modification on primary key, must store as a dictionary'
+        '''allow bracket modification on primary key, must store as a dictionary'''
         if not isinstance(value, dict):
             raise Exception('value is not of type dict')
         item = {**value, **{self.PrimaryKey: key}}
